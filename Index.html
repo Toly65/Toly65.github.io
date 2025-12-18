@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toly - VRChat Systems Developer Portfolio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #22d3ee;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('Images/Banner.png') center/cover no-repeat;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Project Cards */
+        .project {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .project h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .project h4 {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .project p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .project ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .project ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Image Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Video Carousel */
+        .video-carousel {
+            margin: 1.5rem 0;
+        }
+
+        .video-slide {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .video-caption {
+            color: var(--text-secondary);
+        }
+
+        .video-frame {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-frame iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--accent);
+        }
+
+        .swiper-pagination-bullet {
+            background: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--accent);
+            opacity: 1;
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .tag {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* About Section */
+        .about {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .about h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tagline {
+                font-size: 1.1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            section h2 {
+                font-size: 2rem;
+            }
+
+            .project h3 {
+                font-size: 1.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Toly Gillman</h1>
+        <p class="tagline">Games Programmer</p>
+        <p class="subtitle">Specializing in complex multiplayer systems, persistence frameworks, and combat mechanics, demonstrated within constrained runtimes such as VRChat's Udon</p>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1.5rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <strong>Note:</strong> This site showcases personal and extracurricular projects developed outside of assessed university coursework. While several systems are implemented within VRChat, the focus is on multiplayer systems design, persistence, networking constraints, and reusable gameplay frameworks rather than the platform itself.
+        </p>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#vrcrp">VRCRP</a></li>
+            <li><a href="#udoncombat">UdonCombatSystem</a></li>
+            <li><a href="#afterdark">AfterDark Plaza</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- About Section -->
+        <section id="about">
+            <h2>About</h2>
+            <div class="about">
+                <h3>Systems Programming Under Extreme Constraints</h3>
+                <p>My work focuses on building robust, reusable frameworks for VRChat—a platform that presents unique challenges including strict data limits, client-authoritative networking, and unpredictable runtime behavior.</p>
+                
+                <h3>Core Expertise</h3>
+                <ul>
+                    <li><strong>Systems programming</strong> under extreme technical constraints</li>
+                    <li><strong>Networking and synchronization</strong> without traditional servers</li>
+                    <li><strong>Data-oriented design</strong> in environments not built for it</li>
+                    <li><strong>Framework development</strong> focused on reusability and extensibility</li>
+                    <li><strong>Persistence systems</strong> within strict storage limitations</li>
+                </ul>
+
+                <p>These projects represent several years of iteration, failure, refactors, and real-world usage in live VRChat environments, treating VRChat as a hostile runtime that must be carefully engineered around.</p>
+            </div>
+        </section>
+
+        <!-- VRCRP Project -->
+        <section id="vrcrp">
+            <h2>Featured Projects</h2>
+            
+            <div class="project">
+                <h3>VRCRP (VRChat Roleplay Framework)</h3>
+                <div class="tags">
+                    <span class="tag">VRChat Udon</span>
+                    <span class="tag">Persistence</span>
+                    <span class="tag">Networking</span>
+                    <span class="tag">Economy Systems</span>
+                    <span class="tag">Data-Oriented Design</span>
+                </div>
+
+                <p>VRCRP is a large-scale roleplay framework inspired by DarkRP-style systems, adapted for VRChat's instance-based multiplayer and Udon's technical constraints. This is my most complex and ambitious project, developed over multiple iterations and used in real communities.</p>
+
+                <h4>Core Features</h4>
+                <ul>
+                    <li>Persistent player progression across sessions</li>
+                    <li>Job and role systems (civilians, police, dealers, service roles)</li>
+                    <li>Inventory systems with item variants, stacking, and metadata</li>
+                    <li>Currency, shops, and economy balancing</li>
+                    <li>Abuse-resistant persistence within strict data limits</li>
+                </ul>
+
+                <h4>Technical Challenges Solved</h4>
+                <ul>
+                    <li><strong>Compact persistence formats</strong> under VRChat's ~100KB save limit</li>
+                    <li><strong>Duplication exploit prevention</strong> in a decentralized client-authoritative environment</li>
+                    <li><strong>Inventory synchronization</strong> across players without a server</li>
+                    <li><strong>Variant item storage</strong> using delta data to reduce storage costs</li>
+                    <li><strong>Ownership and race condition handling</strong> for late-join consistency</li>
+                </ul>
+
+                <h4>Implementation Highlights</h4>
+                <ul>
+                    <li>Inventories stored as compact tokenized data structures rather than naïve objects</li>
+                    <li>Variant items store only delta data (attachments, custom properties, etc.)</li>
+                    <li>Heavy use of PlayerObjects for persistence and identity</li>
+                    <li>Backend logic cleanly separated from UI systems</li>
+                    <li>Designed as a technical feasibility study as much as a gameplay system</li>
+                </ul>
+
+                <h4>Use Cases</h4>
+                <p>VRCRP has been adapted for a VRChat milsim community (jobs, equipment, controlled access) and forms the conceptual backbone of multiple RP-style experiments. It actively informs academic work on VR multiplayer systems.</p>
+
+                <div class="gallery">
+                    <a href="Images/LegacyVRCRPCloseUp.png" class="glightbox" data-gallery="vrcrp-gallery">
+                        <img src="Images/LegacyVRCRPCloseUp.png" alt="VRCRP Interface Close-up">
+                    </a>
+                    <a href="Images/LegacyVRCRPShopCloseUp.png" class="glightbox" data-gallery="vrcrp-gallery">
+                        <img src="Images/LegacyVRCRPShopCloseUp.png" alt="VRCRP Shop System">
+                    </a>
+                    <a href="Images/VRCRPShopExample.png" class="glightbox" data-gallery="vrcrp-gallery">
+                        <img src="Images/VRCRPShopExample.png" alt="VRCRP Shop Example">
+                    </a>
+                    <a href="Images/VRCRPMilitaryConversionCloseUp.png" class="glightbox" data-gallery="vrcrp-gallery">
+                        <img src="Images/VRCRPMilitaryConversionCloseUp.png" alt="Military RP Conversion">
+                    </a>
+                </div>
+
+                <h4>Video Demonstrations</h4>
+                <div class="video-carousel swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/1a6g-UgNaJg?rel=0&modestbranding=1" title="Inventory Grab Functionality" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">Inventory Grab Functionality</p>
+                        </div>
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/UD26rVC8Rwc?rel=0&modestbranding=1" title="VRCRP Persistence System" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">VRCRP Persistence System</p>
+                        </div>
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/jVD0kXT1BvY?rel=0&modestbranding=1" title="Legacy VRCRP Features" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">Legacy VRCRP Features</p>
+                        </div>
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/5FvnnOuD3Hg?rel=0&modestbranding=1" title="MilitaryRP Port" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">MilitaryRP Port</p>
+                        </div>
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/3Wc_9dTn-NU?rel=0&modestbranding=1" title="Admin Application" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">Admin Application</p>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+
+                <p><em>Note: VRCRP is not fully public due to its size, ongoing iteration, and community-specific adaptations, but represents my strongest example of large-scale systems design under hostile constraints.</em></p>
+            </div>
+
+            <!-- UdonCombatSystem Project -->
+            <div class="project" id="udoncombat">
+                <h3>UdonCombatSystem</h3>
+                <div class="tags">
+                    <span class="tag">VRChat Udon</span>
+                    <span class="tag">Combat Systems</span>
+                    <span class="tag">Public Framework</span>
+                    <span class="tag">Modular Design</span>
+                </div>
+
+                <p>UdonCombatSystem is a public, reusable combat framework for VRChat, designed to provide consistent, extensible weapon handling and damage logic in Udon.</p>
+
+                <h4>Core Features</h4>
+                <ul>
+                    <li>Hitscan and projectile weapon support</li>
+                    <li>Modular damage handling</li>
+                    <li>Multiple weapon fire modes (semi-auto, burst, automatic)</li>
+                    <li>Decoupled input, weapon logic, and effects</li>
+                    <li>Designed to survive VRChat's broken Update/FixedUpdate behavior</li>
+                </ul>
+
+                <h4>Technical Considerations</h4>
+                <ul>
+                    <li><strong>No Update timing reliance</strong> due to headset-dependent behavior</li>
+                    <li><strong>Delayed events and state machines</strong> instead of frame-based logic</li>
+                    <li><strong>Reusable across worlds</strong> rather than tightly coupled to one project</li>
+                    <li><strong>Minimal and composable</strong> design philosophy</li>
+                </ul>
+
+                <h4>Notable Usage: AfterDark Arcade</h4>
+                <p>The system powers a VRChat world featuring:</p>
+                <ul>
+                    <li>Non-persistent inventory and currency system</li>
+                    <li>Weapon shop and shooting range</li>
+                    <li>Combat mechanics, targets, and scoring driven by UdonCombatSystem</li>
+                </ul>
+
+                <div class="gallery">
+                    <a href="Images/UdonCombatSystemAimDownSights.png" class="glightbox" data-gallery="udon-gallery">
+                        <img src="Images/UdonCombatSystemAimDownSights.png" alt="UdonCombatSystem Aiming">
+                    </a>
+                    <a href="Images/VRChat_1920x1080_2022-04-05_20-02-55.512.png" class="glightbox" data-gallery="udon-gallery">
+                        <img src="Images/VRChat_1920x1080_2022-04-05_20-02-55.512.png" alt="Rocket Launcher being held">
+                    </a>
+                </div>
+
+                <h4>Video Demonstrations</h4>
+                <div class="video-carousel swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/jVD0kXT1BvY?rel=0&modestbranding=1" title="UdonCombatSystem Features" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">UdonCombatSystem Features</p>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+
+                <p><em>The system is intentionally minimal and composable, designed to be dropped into worlds without dragging in unrelated gameplay logic.</em></p>
+            </div>
+
+            <!-- AfterDark Plaza Project -->
+            <div class="project" id="afterdark">
+                <h3>AfterDark Plaza (Systems Implementation)</h3>
+                <div class="tags">
+                    <span class="tag">VRChat Udon</span>
+                    <span class="tag">Collaborative Development</span>
+                    <span class="tag">Feature Implementation</span>
+                    <span class="tag">Economy Systems</span>
+                </div>
+
+                <p>AfterDark Plaza is a VRChat world developed in collaboration with a game/level designer. My role focused on implementing gameplay systems based on concrete design requests rather than self-directed framework work.</p>
+
+                <h4>Key Capabilities Demonstrated</h4>
+                <ul>
+                    <li>Translating designer requirements into technical systems</li>
+                    <li>Integrating multiple gameplay systems into an existing world</li>
+                    <li>Building modular features that interact cleanly with each other</li>
+                </ul>
+
+                <h4>Implemented Systems</h4>
+                
+                <p><strong>Session-Based Economy & Inventory</strong></p>
+                <ul>
+                    <li>Non-persistent economy designed for session-based gameplay</li>
+                    <li>Currency earned through gameplay interactions</li>
+                    <li>Clean separation between economy, inventory, UI, and combat systems</li>
+                </ul>
+
+                <p><strong>Arcade Machine Integration</strong></p>
+                <ul>
+                    <li>Event-driven currency rewards on completion</li>
+                    <li>Clean hooks between unrelated systems</li>
+                    <li>Avoided tight coupling in system design</li>
+                </ul>
+
+                <p><strong>Shop System</strong></p>
+                <ul>
+                    <li>In-world shop for spending earned currency</li>
+                    <li>Purchase items and weapons</li>
+                    <li>Extendable and designer-friendly interface</li>
+                </ul>
+
+                <p><strong>Shooting Range</strong></p>
+                <ul>
+                    <li>Fully functional gun range powered by UdonCombatSystem</li>
+                    <li>Weapon spawning and target interaction</li>
+                    <li>Scoring logic and feedback systems</li>
+                </ul>
+
+                <p><strong>Portable Inventory UI</strong></p>
+                <ul>
+                    <li>Handheld/menu-based inventory interface</li>
+                    <li>Item management without world-anchored UI</li>
+                    <li>Designed specifically for VR usability</li>
+                </ul>
+
+                <h4>Technical Highlights</h4>
+                <ul>
+                    <li>Clean separation between all major systems</li>
+                    <li>Session-safe design with no persistence assumptions</li>
+                    <li>Reuse of UdonCombatSystem as underlying combat layer</li>
+                    <li>Emphasis on stability in multiplayer VR environment</li>
+                </ul>
+
+                <h4>Collaboration Process</h4>
+                <ul>
+                    <li>Worked directly with game/level designer</li>
+                    <li>Iterated based on feedback and gameplay needs</li>
+                    <li>Balanced designer intent with VRChat technical limitations</li>
+                </ul>
+
+                <div class="gallery">
+                    <a href="Images/AfterDarkArcadePrizeBooth.png" class="glightbox" data-gallery="afterdark-gallery">
+                        <img src="Images/AfterDarkArcadePrizeBooth.png" alt="Prize Booth">
+                    </a>
+                    <a href="Images/AfterdarkArcadeShopCloseUp.png" class="glightbox" data-gallery="afterdark-gallery">
+                        <img src="Images/AfterdarkArcadeShopCloseUp.png" alt="Shop Close-up">
+                    </a>
+                    <a href="Images/AfterDarkArcadeOutsidePrettyView.png" class="glightbox" data-gallery="afterdark-gallery">
+                        <img src="Images/AfterDarkArcadeOutsidePrettyView.png" alt="AfterDark Arcade Exterior">
+                    </a>
+                </div>
+
+                <h4>Video Demonstrations</h4>
+                <div class="video-carousel swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide video-slide">
+                            <div class="video-frame">
+                                <iframe src="https://www.youtube-nocookie.com/embed/Lm4vwK_-ryA?rel=0&modestbranding=1" title="AfterDark Plaza Trailer" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <p class="video-caption">AfterDark Plaza Trailer</p>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+
+                <p><em>AfterDark Plaza serves as a contrast to my larger framework projects, showing my ability to integrate into a collaborative pipeline and deliver feature-complete gameplay systems within an existing creative vision.</em></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Toly - Games Programmer</p>
+        <p>Specializing in multiplayer systems, persistence frameworks, and combat mechanics</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Initialize GLightbox for all galleries (focus trap, ESC close, scroll lock handled by library)
+        const lightbox = GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: false,
+            autoplayVideos: false,
+        });
+
+        // Initialize a Swiper instance for every video carousel on the page
+        document.querySelectorAll('.video-carousel').forEach((carousel) => {
+            const pagination = carousel.querySelector('.swiper-pagination');
+            const nextEl = carousel.querySelector('.swiper-button-next');
+            const prevEl = carousel.querySelector('.swiper-button-prev');
+
+            new Swiper(carousel, {
+                slidesPerView: 1,
+                spaceBetween: 16,
+                loop: false,
+                navigation: {
+                    nextEl: nextEl,
+                    prevEl: prevEl,
+                },
+                pagination: {
+                    el: pagination,
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                },
+            });
+        });
+    </script>
+</body>
+</html>
