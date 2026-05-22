@@ -340,7 +340,7 @@
         <p class="tagline">Games Programmer</p>
         <p class="subtitle">Specializing in complex multiplayer systems, persistence frameworks, and combat mechanics, demonstrated within constrained runtimes such as VRChat's Udon</p>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1.5rem; max-width: 900px; margin-left: auto; margin-right: auto;">
-            <strong>Note:</strong> This site showcases personal and extracurricular projects developed outside of assessed university coursework. While several systems are implemented within VRChat, the focus is on multiplayer systems design, persistence, networking constraints, and reusable gameplay frameworks rather than the platform itself.
+            <strong>Note:</strong> This site showcases both personal projects and assessed university work. The VRChat-based projects are personal and extracurricular, developed outside of coursework. The Quackworks Engine is an assessed university group project — the systems described here reflect my individual contributions within that team. While several personal systems are implemented within VRChat, the focus is on multiplayer systems design, persistence, networking constraints, and reusable gameplay frameworks rather than the platform itself.
         </p>
     </header>
 
@@ -351,6 +351,7 @@
             <li><a href="#vrcrp">VRCRP</a></li>
             <li><a href="#udoncombat">UdonCombatSystem</a></li>
             <li><a href="#afterdark">AfterDark Plaza</a></li>
+            <li><a href="#quackworks">Quackworks Engine</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
@@ -687,6 +688,93 @@
                 <p><em>AfterDark Plaza serves as a contrast to my larger framework projects, showing my ability to integrate into a collaborative pipeline and deliver feature-complete gameplay systems within an existing creative vision.</em></p>
                 
                 <p style="text-align: center; margin-top: 1.5rem;"><strong><a href="https://vrchat.com/home/world/wrld_3d892cf2-cd4a-4322-9e7e-2ec0cd7ea44c/info" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; border-bottom: 2px solid var(--accent);">Visit World →</a></strong></p>
+            </div>
+        </section>
+
+        <!-- Quackworks Engine Section -->
+        <section id="quackworks">
+            <h2>University Project</h2>
+
+            <div class="project">
+                <h3>Quackworks Engine</h3>
+                <div class="tags">
+                    <span class="tag">C++</span>
+                    <span class="tag">Cross-Platform</span>
+                    <span class="tag">Windows</span>
+                    <span class="tag">PS5</span>
+                    <span class="tag">Engine Systems</span>
+                    <span class="tag">Input Architecture</span>
+                    <span class="tag">Event-Driven Design</span>
+                    <span class="tag">Group Project</span>
+                </div>
+
+                <p>Quackworks is a C++ cross-platform game engine built as an assessed university group project, targeting Windows and PS5. The engine powers a Duck Game-inspired 2D platformer demo. The systems below are my individual contributions within the team.</p>
+
+                <div class="featured-video">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube-nocookie.com/embed/2c-ytD2Q6kM?rel=0&modestbranding=1" title="Quackworks Engine Demo" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <p class="video-caption">Quackworks Engine Demo</p>
+                </div>
+
+                <p><strong>🔗 <a href="https://github.com/StaffsUniGames/gdev60020-25-cross-platform-framework-quackworks" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; border-bottom: 2px solid var(--accent);">View on GitHub</a></strong></p>
+
+                <h4>EventBus</h4>
+                <p>A type-safe publish/subscribe system for decoupled inter-system communication.</p>
+                <ul>
+                    <li><strong>RTTI-free type identification</strong> using addresses of function-local statics — unique per type, zero runtime cost after the first call, no compiler type-info table required</li>
+                    <li><strong>Type erasure</strong> stores all handlers as <code>std::function&lt;void(const void*)&gt;</code> with a typed wrapper at the subscribe site, keeping storage uniform across all event types</li>
+                    <li><strong>Immediate and deferred dispatch</strong> — <code>Publish</code> fires synchronously; <code>Enqueue</code>/<code>Flush</code> defers events to a controlled point in the game loop so input lands before gameplay logic runs</li>
+                    <li><strong>Re-entrant safe</strong> — iterates a snapshot of handlers, so subscribe or unsubscribe during a callback is safe without affecting the current pass</li>
+                    <li><strong>Token-based unsubscription</strong> for RAII-style lifetime management</li>
+                </ul>
+
+                <h4>Input System</h4>
+                <p>A three-layer input architecture designed so gameplay code never sees raw key codes or platform SDK types.</p>
+                <ul>
+                    <li><strong>IInputBackend</strong> — pure interface whose sole job is filling a platform-agnostic <code>InputState</code> struct each frame; all normalisation and SDK-specific knowledge stops here</li>
+                    <li><strong>InputSystem</strong> — double-buffered state snapshots; <code>IsKeyPressed</code>/<code>IsKeyReleased</code> derived from current/previous diff rather than hardware edge detection, making edge detection consistent across all backends and testable without real hardware</li>
+                    <li><strong>InputActionSystem</strong> — semantic action bindings identified by plain integers so each application defines its own enum; multiple bindings per action, per-binding trigger types (Down/Pressed/Released), analog axis bindings with deadzone, scale, and invert</li>
+                </ul>
+
+                <p><strong>Windows backend (PCInputSystem)</strong> — unifies three controller SDKs into the common <code>InputState</code>:</p>
+                <ul>
+                    <li><strong>XInput</strong> loaded at runtime via <code>LoadLibraryW</code> across three DLL candidates — no hard link-time dependency, engine still launches on machines without XInput</li>
+                    <li><strong>DualSense via scepad</strong> — the same Sony library used on PS5 hardware; Y-axis inversion corrected during normalisation; exposes LED lightbar control through a SDK-agnostic <code>SetGamepadLedColor</code> API</li>
+                    <li><strong>Steam Input</strong> — resolves named action handles against a <code>"Gameplay"</code> action set, covering Switch Pro Controllers, Steam Deck, and generic pads; conditionally compiled under <code>QUACK_ENABLE_STEAM_INPUT</code></li>
+                    <li><strong>Stable slot assignment</strong> — controllers tracked by a <code>uint64_t</code> device ID encoding both the source SDK and native handle in a single value, so reconnected controllers return to their original slot</li>
+                    <li><strong>SDK priority</strong> — when Steam Input reports active controllers, XInput and DualSense candidates are discarded to prevent the same physical device appearing twice under different IDs</li>
+                </ul>
+
+                <p><strong>PS5 backend</strong> — same <code>IInputBackend</code> interface without the PC complexity:</p>
+                <ul>
+                    <li>Fixed hardware platform with static <code>SceUserServiceUserId</code> constants maps directly to gamepad slots — no dynamic discovery needed</li>
+                    <li>Splash screen input interception resolved by force-closing the system splash at initialisation — undocumented PS5 SDK behaviour discovered by process of elimination</li>
+                    <li><code>ControllerConnectedEvent</code>/<code>ControllerDisconnectedEvent</code> publishes explicitly added after they were found missing on PS5 hardware during lobby testing</li>
+                </ul>
+
+                <h4>SpriteSheetAnimatorComponent</h4>
+                <p>Drives a <code>SpriteSheetRendererComponent</code> by selecting which cell of a sprite sheet to display each frame.</p>
+                <ul>
+                    <li><strong>Two-layer animation</strong> — a base layer plays sequences of absolute cell coordinates; an offset layer adds coordinate offsets on top each frame, allowing facial/mouth animations (stored as row offsets in the source art) to composite over any movement animation independently without duplicating sprite data</li>
+                    <li><strong>Delta-time accumulator</strong> using a <code>while</code> loop so large frame deltas advance multiple frames rather than causing the animation to fall permanently behind</li>
+                    <li>Design inspired by Duck Game's rebuilt source (<code>_sprite.AddAnimation("run", 1f, true, 1, 2, 3, 4, 5, 6)</code>), with the coordinate system and offset compositing developed independently</li>
+                </ul>
+
+                <h4>PlayerManager & PlayerControllerComponent</h4>
+                <p>Application-layer systems for the Duck Game demo's local multiplayer lobby and character control.</p>
+                <ul>
+                    <li><strong>Opt-in lobby registration</strong> — controllers present but idle do not auto-join; players explicitly press Start to join and Back to leave, mirroring local multiplayer convention</li>
+                    <li><strong>Event-driven controller discovery</strong> — subscribes to <code>ControllerConnectedEvent</code>/<code>ControllerDisconnectedEvent</code> rather than polling; controller disconnect mid-game immediately unregisters the player and publishes <code>PlayerLeftEvent</code></li>
+                    <li><strong>Stable device ID tracking</strong> — maps controllers by <code>uint64_t</code> device ID rather than slot index, so reconnects return to the same player slot</li>
+                    <li><strong>Isolated action ID allocation</strong> per controller component, starting at 1000 to leave the lower range for game-level enums</li>
+                    <li><strong>Lazy component resolution</strong> — rigidbody, collider, and animator resolved on first <code>Update</code> rather than at construction to avoid ordering constraints</li>
+                    <li><strong>Grounded detection via contact set</strong> — tracks all bodies currently in contact below the player rather than a single boolean flag, correctly handling simultaneous surface contacts</li>
+                    <li><strong>Crouch slide</strong> with suppressed steering input, reduced linear damping for momentum preservation, and velocity threshold gating</li>
+                    <li><strong>Quack pitch modulation</strong> via right trigger analog binding — deeper trigger pull produces a higher-pitched quack (1.0–1.5×), keyboard always plays at 1.0</li>
+                </ul>
+
+                <p style="text-align: center; margin-top: 1.5rem;"><strong><a href="https://github.com/StaffsUniGames/gdev60020-25-cross-platform-framework-quackworks" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; border-bottom: 2px solid var(--accent);">View Repository →</a></strong></p>
             </div>
         </section>
 
