@@ -534,37 +534,64 @@
                     <span class="tag">Unity</span>
                     <span class="tag">C#</span>
                     <span class="tag">Combat Systems</span>
+                    <span class="tag">Physical Reloading</span>
+                    <span class="tag">Networking</span>
                     <span class="tag">Public Framework</span>
                     <span class="tag">Modular Design</span>
                 </div>
 
-                <p>UdonCombatSystem is a public, reusable combat framework for VRChat, designed to provide consistent, extensible weapon handling and damage logic in Udon.</p>
+                <p>UdonCombatSystem is a reusable combat framework for VRChat, providing consistent, extensible weapon handling, damage logic, and physically interactive reloading in Udon. Originally a lightweight hitscan/projectile system, it has since been rewritten from the ground up to support H3VR/Boneworks-style manual manipulation, including physical magazine loading, charging handles, and body-anchored holsters, while remaining fully playable for desktop users.</p>
                 
                 <p><strong>🔗 <a href="https://github.com/Toly65/UdonCombatSystem" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; border-bottom: 2px solid var(--accent);">View on GitHub</a></strong></p>
 
+                <div class="featured-video">
+                    <div class="video-frame">
+                        <iframe src="https://www.youtube-nocookie.com/embed/ptbnpP2fJO8?rel=0&modestbranding=1" title="UdonCombatSystem Main Showcase" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <p class="video-caption">UdonCombatSystem Main Showcase</p>
+                </div>
+
                 <h4>Core Features</h4>
                 <ul>
-                    <li>Hitscan and projectile weapon support</li>
-                    <li>Modular damage handling</li>
-                    <li>Multiple weapon fire modes (semi-auto, burst, automatic)</li>
-                    <li>Decoupled input, weapon logic, and effects</li>
-                    <li>Designed to survive VRChat's broken Update/FixedUpdate behavior</li>
+                    <li>Hitscan and projectile weapon support, with semi-auto, burst, and full-auto fire modes</li>
+                    <li><strong>Physical reloading</strong> with manual magazine insertion and slide/charging handle cycling to chamber rounds</li>
+                    <li><strong>Mag belt</strong> that auto-populates with the correct magazine for the currently held weapon, backed by a managed mag pool</li>
+                    <li><strong>Optional ammo inventory</strong> for Boneworks-style scarcity and carry limits</li>
+                    <li><strong>Pockets system</strong> with body-anchored holsters at hip and chest for stow/retrieve by physical placement</li>
+                    <li><strong>Two-handed weapon handling</strong> with independent grip points and preserved held rotation across grip changes</li>
+                    <li>Split between <strong>complex</strong> and <strong>arcade</strong> weapons for high-depth interaction or easier setup</li>
+                    <li><strong>Full desktop parity</strong>, with keyboard/mouse equivalents for each VR interaction</li>
                 </ul>
 
                 <h4>Technical Considerations</h4>
                 <ul>
-                    <li><strong>No Update timing reliance</strong> due to headset-dependent behavior</li>
-                    <li><strong>Delayed events and state machines</strong> instead of frame-based logic</li>
-                    <li><strong>Reusable across worlds</strong> rather than tightly coupled to one project</li>
-                    <li><strong>Minimal and composable</strong> design philosophy</li>
+                    <li>VRChat's Udon is treated as a hostile runtime, so the rewrite targets robustness and scalability over ideal-engine assumptions</li>
+                    <li><strong>Networked via events with parameters</strong>, replacing legacy ownership-transfer damage propagation</li>
+                    <li><strong>Hitboxes are PlayerObjects</strong> rather than a shared pool, improving scalability and reducing world upload size</li>
+                    <li><strong>No Update timing reliance</strong>, with logic driven by events and state rather than per-frame polling</li>
+                    <li><strong>Slide/charging handle behavior via world PhysBones</strong>, avoiding clunky pickup-based pull interactions</li>
                 </ul>
 
-                <h4>Notable Usage: AfterDark Arcade</h4>
-                <p>The system powers a VRChat world featuring:</p>
+                <h4>Sockets, Rebuilt From Scratch</h4>
+                <p>VRChat has no native socket concept, so both the magwell and pockets system are effectively custom socket implementations.</p>
                 <ul>
-                    <li>Non-persistent inventory and currency system</li>
-                    <li>Weapon shop and shooting range</li>
-                    <li>Combat mechanics, targets, and scoring driven by UdonCombatSystem</li>
+                    <li>Pickup parents carry a <strong>size enum</strong> and stowed flag, and pockets only accept matching sizes</li>
+                    <li>When items are stowed, visuals are <strong>hidden for remote players</strong> to mask poor sync for non-woken objects</li>
+                    <li>Two anchor points are used: <strong>hips and chest</strong></li>
+                </ul>
+
+                <h4>Two-Handed Handling</h4>
+                <p>Two-handed interaction was the hardest part of the rewrite because VRChat has no native two-grip pickup model.</p>
+                <ul>
+                    <li>Implements two-handed behavior using <strong>two separate pickups</strong> and a reparenting strategy</li>
+                    <li><strong>Held rotation is preserved</strong> when releasing the front grip to avoid orientation snapping</li>
+                    <li>Architecture serves as groundwork for <strong>bolt-action reloading</strong> that requires front-hand support</li>
+                </ul>
+
+                <h4>Desktop Parity</h4>
+                <ul>
+                    <li><strong>Pockets bind to number keys</strong> for presenting pocket contents or stowing currently held items</li>
+                    <li>For <strong>complex desktop weapons</strong>, reload is programmatically stepped through the same sequence as VR manual interaction</li>
                 </ul>
 
                 <div class="gallery">
