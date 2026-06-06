@@ -454,23 +454,23 @@
                 <h4>Sockets, Rebuilt From Scratch</h4>
                 <p>VRChat has no native socket concept, so both the magwell and pockets system are effectively custom socket implementations.</p>
                 <ul>
-                    <li>Pickup parents carry a <strong>size enum</strong> and stowed flag, and pockets only accept matching sizes</li>
-                    <li>When items are stowed, visuals are <strong>hidden for remote players</strong> to mask poor sync for non-woken objects</li>
-                    <li>Two anchor points are used: <strong>hips and chest</strong></li>
+                    <li>Pickup parents carry a size enum and stowed flag, and pockets only accept matching sizes</li>
+                    <li>When items are stowed, visuals are hidden for remote players to mask poor sync for non-woken objects</li>
+                    <li>Two anchor points are used: hips and chest</li>
                 </ul>
 
                 <h4>Two-Handed Handling</h4>
                 <p>Two-handed interaction was the hardest part of the rewrite because VRChat has no native two-grip pickup model.</p>
                 <ul>
-                    <li>Implements two-handed behavior using <strong>two separate pickups</strong> and a reparenting strategy</li>
-                    <li><strong>Held rotation is preserved</strong> when releasing the front grip to avoid orientation snapping</li>
-                    <li>Architecture serves as groundwork for <strong>bolt-action reloading</strong> that requires front-hand support</li>
+                    <li>Implements two-handed behavior using two separate pickups and a reparenting strategy</li>
+                    <li>Held rotation is preserved when releasing the front grip to avoid orientation snapping</li>
+                    <li>Architecture serves as groundwork for bolt-action reloading that requires front-hand support</li>
                 </ul>
 
                 <h4>Desktop Parity</h4>
                 <ul>
-                    <li><strong>Pockets bind to number keys</strong> for presenting pocket contents or stowing currently held items</li>
-                    <li>For <strong>complex desktop weapons</strong>, reload is programmatically stepped through the same sequence as VR manual interaction</li>
+                    <li>Pockets bind to number keys for presenting pocket contents or stowing currently held items</li>
+                    <li>For complex desktop weapons, reload is programmatically stepped through the same sequence as VR manual interaction</li>
                 </ul>
 
                 <h4>Video Demonstrations</h4>
